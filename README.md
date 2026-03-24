@@ -1,3 +1,6 @@
+<<<<<<< HEAD
+# Práctica 
+=======
 # Adivina el País
 
 ## Descripción
@@ -132,3 +135,4 @@ Abrir `http://localhost:3000`.
 ## Licencia
 
 MIT 
+>>>>>>> 3281b58c5c7a19f3573d4ad360e09b65e44baf55
