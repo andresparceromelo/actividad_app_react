@@ -1,138 +1,203 @@
-<<<<<<< HEAD
-# Práctica 
-=======
-# Adivina el País
+# 🌍 GeoQuest — Guess the Country in 20 Questions
 
-## Descripción
+> A geography guessing game powered by AI — built with Next.js, React, and TailwindCSS.
 
-Juego de trivia para adivinar un país con datos reales y preguntas generadas por IA.
+---
 
-- Frontend con **Next.js**.
-- Estilos con **Tailwind CSS**.
-- Datos de países desde la API:
-  - `https://restcountries.com/v3.1/all?fields=name,capital,currencies,flags,latlng`
-- Preguntas generadas por LLM en **Novita AI**.
+## 📋 Project Info
 
-## Requisitos del proyecto
+| Field | Value |
+|-------|-------|
+| **Course** | Desarrollo de Aplicaciones Web |
+| **Event** | Evento Evaluativo 3 — Mini App React |
+| **Stack** | Next.js 14 · React 18 · TailwindCSS · novita.ai |
+| **APIs** | REST Countries API · novita.ai (LLaMA 3.1) |
 
-1. Usar Next.js (`https://nextjs.org/`).
-2. Usar TailwindCSS (`https://tailwindcss.com/`).
-3. Consumir la API de países:
-   - `https://restcountries.com/v3.1/all?fields=name,capital,currencies,flags,latlng`
-4. Consumir API de Novita AI para generar preguntas.
-5. Contar con archivo `.env` para claves.
+---
 
-## Flujo Paso a Paso
+## 🎮 How the Game Works
 
-1. Carga inicial de países:
-   - En `getStaticProps` o API route de Next.js se consume la API de países.
-   - Se obtiene lista con campos: `name`, `capital`, `currencies`, `flags`, `latlng`.
+1. The app fetches all countries from the **REST Countries API**
+2. One country is **randomly selected** and stored secretly in state
+3. The player asks **up to 20 questions** in natural language
+4. The **AI (novita.ai)** answers each question using the country's data — without revealing the name
+5. The player can **guess the country** at any time (uses 1 question)
+6. Game ends when: player guesses correctly ✅ OR uses all 20 questions ❌
 
-2. Selección aleatoria de país
-   - Al iniciar juego, se escoge 1 país de la lista.
+---
 
-3. Generación de preguntas con Novita AI
-   - En `pages/api/pregunta.js` (o similar), se envía prompt a Novita AI con datos del país.
-   - Ejemplo de prompt: "Genera una pregunta tipo trivia para adivinar este país: {nombre, capital, moneda, ubicación}."
+## 🚀 Getting Started
 
-4. Interacción del usuario
-   - Mostrar bandera, pistas opcionales y campo para respuesta.
-   - El usuario escribe el país y envía.
+### 1. Clone or download the project
 
-5. Verificación de respuesta
-   - Comparar la respuesta con el nombre del país (`name.common`, `name.official`, variantes).
-   - Si es correcto: mostrar mensaje y botón "Jugar otra vez".
-   - Si es incorrecto: mostrar pista extra (capital, continente, moneda) y permitir nuevo intento.
-
-6. Puntuación y rondas
-   - Opcional: contar intentos, tiempo y aciertos.
-   - Guardar score en estado local (React) o localStorage.
-
-## Setup (Next.js + Tailwind)
-
-1. Crear app Next.js:
-   ```bash
-   npx create-next-app@latest adivina-el-pais
-   cd adivina-el-pais
-   ```
-
-2. Instalar Tailwind:
-   ```bash
-   npm install -D tailwindcss postcss autoprefixer
-   npx tailwindcss init -p
-   ```
-
-3. Configurar `tailwind.config.js`:
-   ```js
-   module.exports = {
-     content: [
-       './pages/**/*.{js,ts,jsx,tsx}',
-       './components/**/*.{js,ts,jsx,tsx}',
-     ],
-     theme: { extend: {} },
-     plugins: [],
-   }
-   ```
-
-4. Importar Tailwind en `styles/globals.css` :
-   ```css
-   @tailwind base;
-   @tailwind components;
-   @tailwind utilities;
-   ```
-
-5. Instalar dependencia para fetch en servidor (opcional):
-   ```bash
-   npm install axios
-   ```
-
-## Configuración de variables de entorno
-
-Crear `.env.local` en la raíz:
-
-```env
-NEXT_PUBLIC_COUNTRIES_API=https://restcountries.com/v3.1/all?fields=name,capital,currencies,flags,latlng
-NOVITA_API_KEY=tu_api_key_de_novita
-NOVITA_API_URL=https://api.novita.ai/v1/generate
+```bash
+git clone https://github.com/your-team/guess-the-country.git
+cd guess-the-country
 ```
 
-## API Routes sugeridas
+### 2. Install dependencies
 
-- `pages/api/paises.js`:
-  - Hace proxy a `NEXT_PUBLIC_COUNTRIES_API` y limpia datos si se desea.
+```bash
+npm install
+```
 
-- `pages/api/pregunta.js`:
-  - Recibe `pais` (JSON) y hace request a Novita AI.
-  - Devuelve texto de pregunta.
+### 3. Set up your API key
 
-## Ejecución
+Copy the example env file and add your novita.ai key:
+
+```bash
+cp .env.local.example .env.local
+```
+
+Edit `.env.local`:
+```
+NOVITA_API_KEY=your_actual_novita_api_key_here
+```
+
+> 🔑 Get a free API key at: https://novita.ai/  
+> Go to **Dashboard → API Keys → Create Key**
+
+### 4. Run the development server
 
 ```bash
 npm run dev
 ```
 
-Abrir `http://localhost:3000`.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## Estructura de componentes (sugerida)
+---
 
-- `components/GameBoard.js`
-- `components/CountryCard.js`
-- `components/QuestionBox.js`
-- `components/ScorePanel.js`
+## 📁 Project Structure
 
-## Cómo jugar
+```
+guess-the-country/
+│
+├── app/                        # Next.js App Router pages
+│   ├── layout.jsx              # Root layout (Header + Footer on all pages)
+│   ├── page.jsx                # Home page (/)
+│   ├── globals.css             # Global styles (Tailwind directives only)
+│   ├── game/
+│   │   └── page.jsx            # Game page (/game)
+│   └── api/
+│       └── ask/
+│           └── route.js        # API route — proxies requests to novita.ai
+│
+├── components/                 # Reusable UI components
+│   ├── Header.jsx              # Navigation bar (all pages)
+│   ├── Footer.jsx              # Footer (all pages)
+│   ├── GameBoard.jsx           # Main game UI orchestrator
+│   ├── ChatBox.jsx             # Chat message history display
+│   ├── QuestionInput.jsx       # Text input for asking questions
+│   ├── GuessInput.jsx          # Text input for submitting guesses
+│   ├── CountryCard.jsx         # Country info card (shown at game end)
+│   ├── LoadingSpinner.jsx      # Animated loading indicator
+│   └── ErrorMessage.jsx        # Error display component
+│
+├── hooks/
+│   └── useGame.js              # Custom hook — ALL game state & logic
+│
+├── services/
+│   └── aiService.js            # novita.ai API client & prompt builder
+│
+├── utils/
+│   └── countryUtils.js         # Helper functions for country data
+│
+├── .env.local.example          # Environment variable template
+├── next.config.js              # Next.js configuration
+├── tailwind.config.js          # Tailwind CSS configuration
+└── package.json                # Dependencies
+```
 
-1. Presiona "Iniciar juego".
-2. Responde preguntas hasta adivinar el país.
-3. Si fallas, usa la pista.
-4. Presiona "Reiniciar" para otro país.
+---
 
-## Contribuciones
+## 🌐 APIs Used
 
-- Fork y PR bien descrito.
-- Issues siempre bienvenidos.
+### 1. REST Countries API
+- **URL:** `https://restcountries.com/v3.1/all?fields=name,capital,currencies,flags,latlng`
+- **Used for:** Loading all countries, randomly selecting the mystery country
+- **Free:** Yes, no API key needed
+- **Where used:** `hooks/useGame.js` (via `useEffect`)
 
-## Licencia
+### 2. novita.ai API (LLaMA 3.1 8B)
+- **URL:** `https://api.novita.ai/v3/openai/chat/completions`
+- **Used for:** Answering the player's questions with AI-generated hints
+- **Free tier:** Yes (limited requests)
+- **Where used:** `services/aiService.js` + `app/api/ask/route.js`
 
-MIT 
->>>>>>> 3281b58c5c7a19f3573d4ad360e09b65e44baf55
+---
+
+## 🧩 Key React Concepts Demonstrated
+
+| Concept | Where |
+|---------|-------|
+| `useState` | `hooks/useGame.js` — game state, messages, status |
+| `useEffect` | `hooks/useGame.js` — fetching countries on load |
+| `useCallback` | `hooks/useGame.js` — stable function references |
+| `useRef` | `components/ChatBox.jsx` — auto-scroll to latest message |
+| Custom Hook | `hooks/useGame.js` — separates logic from UI |
+| API consumption | `hooks/useGame.js` + `services/aiService.js` |
+| Loading state | `components/LoadingSpinner.jsx` |
+| Error handling | `components/ErrorMessage.jsx` |
+| Next.js `Link` | `components/Header.jsx`, `app/page.jsx` |
+| API Route | `app/api/ask/route.js` — server-side proxy |
+| Server vs Client | `app/game/page.jsx` (server) + `GameBoard.jsx` (client) |
+
+---
+
+## 🎨 Design Decisions
+
+- **TailwindCSS only** — zero custom CSS files, zero Bootstrap
+- **Responsive** — works on mobile and desktop
+- **Chat UI** — messages appear on left (AI) or right (user), just like WhatsApp
+- **Progress bar** — turns red when fewer than 5 questions remain
+- **Country reveal** — after the game, the full country card shows (flag, capital, currency, etc.)
+
+---
+
+## 👥 Team Members
+
+| Name | Role |
+|------|------|
+| Integrante 1 | Frontend & Game Logic |
+| Integrante 2 | API Integration & Services |
+| Integrante 3 | UI Design & Components |
+
+> Replace with real names before submitting!
+
+---
+
+## 📝 Git Commit Guidelines
+
+Each member must have **at least 3 commits**. Suggested workflow:
+
+```bash
+# Member 1 — example commits
+git commit -m "feat: add useGame custom hook with state management"
+git commit -m "feat: implement askQuestion and submitGuess logic"
+git commit -m "fix: handle edge case when countries API fails"
+
+# Member 2 — example commits
+git commit -m "feat: create aiService with novita.ai integration"
+git commit -m "feat: add /api/ask route for server-side AI calls"
+git commit -m "feat: add countryUtils helper functions"
+
+# Member 3 — example commits
+git commit -m "feat: build ChatBox component with auto-scroll"
+git commit -m "feat: create Header and Footer components"
+git commit -m "feat: design home page with team section"
+```
+
+---
+
+## 🔧 Build for Production
+
+```bash
+npm run build
+npm start
+```
+
+---
+
+## 📄 License
+
+MIT — Free to use for educational purposes.
