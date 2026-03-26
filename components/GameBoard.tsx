@@ -145,7 +145,13 @@ export default function GameBoard() {
  * GameOverBanner
  * Shows a win or lose message at the top of the game.
  */
-function GameOverBanner({ type, questionsUsed, onRestart }) {
+interface GameOverBannerProps {
+  type: "won" | "lost";
+  questionsUsed?: number;
+  onRestart: () => void;
+}
+
+function GameOverBanner({ type, questionsUsed, onRestart }: GameOverBannerProps) {
   const isWin = type === "won";
 
   return (

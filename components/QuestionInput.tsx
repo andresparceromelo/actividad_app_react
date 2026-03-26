@@ -12,14 +12,20 @@
  * ─────────────────────────────────────────────────────────────
  */
 
-import { useState } from "react";
+import React, { useState } from "react";
 
-export default function QuestionInput({ onSubmit, disabled, questionsRemaining }) {
+interface QuestionInputProps {
+  onSubmit: (question: string) => void;
+  disabled: boolean;
+  questionsRemaining: number;
+}
+
+export default function QuestionInput({ onSubmit, disabled, questionsRemaining }: QuestionInputProps) {
   // Local state just for this input field
   const [inputValue, setInputValue] = useState("");
 
   // Handle form submission
-  function handleSubmit(e) {
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault(); // Prevent page refresh
     const trimmed = inputValue.trim();
     if (!trimmed || disabled) return;

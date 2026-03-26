@@ -10,14 +10,14 @@
  * ─────────────────────────────────────────────────────────────
  */
 
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { askAI } from "@/services/aiService";
 
 /**
  * POST /api/ask
  * Receives the user's question and country data, returns the AI answer.
  */
-export async function POST(request) {
+export async function POST(request: NextRequest) {
   try {
     // Parse the request body
     const { question, country, history } = await request.json();
@@ -42,3 +42,4 @@ export async function POST(request) {
     );
   }
 }
+

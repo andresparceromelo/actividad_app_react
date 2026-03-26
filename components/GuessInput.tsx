@@ -11,12 +11,17 @@
  * ─────────────────────────────────────────────────────────────
  */
 
-import { useState } from "react";
+import React, { useState } from "react";
 
-export default function GuessInput({ onSubmit, disabled }) {
+interface GuessInputProps {
+  onSubmit: (guess: string) => void;
+  disabled: boolean;
+}
+
+export default function GuessInput({ onSubmit, disabled }: GuessInputProps) {
   const [guessValue, setGuessValue] = useState("");
 
-  function handleSubmit(e) {
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const trimmed = guessValue.trim();
     if (!trimmed || disabled) return;

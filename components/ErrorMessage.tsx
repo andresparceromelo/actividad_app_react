@@ -8,7 +8,12 @@
  * ─────────────────────────────────────────────────────────────
  */
 
-export default function ErrorMessage({ message, onRetry }) {
+interface ErrorMessageProps {
+  message: string;
+  onRetry?: () => void;
+}
+
+export default function ErrorMessage({ message, onRetry }: ErrorMessageProps) {
   if (!message) return null;
 
   return (

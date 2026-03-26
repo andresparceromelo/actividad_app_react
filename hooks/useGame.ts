@@ -13,6 +13,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { getRandomCountry, checkGuess } from "@/utils/countryUtils";
+import { Country, ChatMessage } from "@/utils/types";
 
 // How many questions the player gets per game
 const MAX_QUESTIONS = 20;
@@ -25,25 +26,25 @@ export function useGame() {
   // ── State declarations ───────────────────────────────────────
 
   // The secret country (never shown to the user during the game)
-  const [secretCountry, setSecretCountry] = useState(null);
+  const [secretCountry, setSecretCountry] = useState<Country | null>(null);
 
   // All countries loaded from the API (used to pick a random one)
-  const [allCountries, setAllCountries] = useState([]);
+  const [allCountries, setAllCountries] = useState<Country[]>([]);
 
   // The chat history: array of { role: "user"|"ai", text: string }
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
 
   // How many questions the user has asked so far
-  const [questionsUsed, setQuestionsUsed] = useState(0);
+  const [questionsUsed, setQuestionsUsed] = useState<number>(0);
 
   // Game status: "loading" | "playing" | "won" | "lost"
-  const [gameStatus, setGameStatus] = useState("loading");
+  const [gameStatus, setGameStatus] = useState<"loading" | "playing" | "won" | "lost">("loading");
 
   // Whether the AI is currently generating a response
-  const [isAiThinking, setIsAiThinking] = useState(false);
+  const [isAiThinking, setIsAiThinking] = useState<boolean>(false);
 
   // Any error message to show the user
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   // ── Fetch countries on first load ───────────────────────────
   useEffect(() => {
@@ -71,7 +72,7 @@ export function useGame() {
 
   // ── Start (or restart) the game ─────────────────────────────
   const startNewGame = useCallback(
-    (country = null) => {
+    (country: Country | null = null) => {
       // If no country is passed, pick a new random one
       const newCountry = country ?? getRandomCountry(allCountries);
 
@@ -92,7 +93,7 @@ export function useGame() {
 
   // ── Handle a question from the user ─────────────────────────
   const askQuestion = useCallback(
-    async (questionText) => {
+    async (questionText: string) => {
       // Guard: don't allow questions if game isn't active
       if (gameStatus !== "playing" || isAiThinking) return;
       if (!questionText.trim()) return;
@@ -148,7 +149,7 @@ export function useGame() {
 
   // ── Handle a country guess from the user ────────────────────
   const submitGuess = useCallback(
-    async (guessText) => {
+    async (guessText: string) => {
       if (gameStatus !== "playing" || isAiThinking) return;
       if (!guessText.trim()) return;
 
@@ -165,10 +166,10 @@ export function useGame() {
       if (isCorrect) {
         // Player wins!
         setMessages((prev) => [
-          ...prev,
+          ...(prev as ChatMessage[]),
           {
-            role: "ai",
-            text: `🎉 YES! You got it! The country was **${secretCountry.name.common}**! Incredible geography skills! 🌟`,
+            role: "ai" as const,
+            text: `🎉 YES! You got it! The country was **${secretCountry?.name.common}**! Incredible geography skills! 🌟`,
           },
         ]);
         setGameStatus("won");
@@ -176,13 +177,13 @@ export function useGame() {
         // Wrong guess — counts as a used question
         const remaining = MAX_QUESTIONS - newQuestionCount;
         setMessages((prev) => [
-          ...prev,
+          ...(prev as ChatMessage[]),
           {
-            role: "ai",
+            role: "ai" as const,
             text:
               remaining > 0
                 ? `❌ Nope, that's not it! You have ${remaining} question${remaining !== 1 ? "s" : ""} left. Keep thinking!`
-                : `❌ Wrong guess! You've used all your questions. The country was **${secretCountry.name.common}**. Better luck next time!`,
+                : `❌ Wrong guess! You've used all your questions. The country was **${secretCountry?.name.common}**. Better luck next time!`,
           },
         ]);
 

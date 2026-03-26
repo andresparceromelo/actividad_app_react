@@ -10,8 +10,9 @@
  */
 
 import { getCurrencyDisplay } from "@/utils/countryUtils";
+import { Country } from "@/utils/types";
 
-export default function CountryCard({ country }) {
+export default function CountryCard({ country }: { country: Country | null }) {
   if (!country) return null;
 
   // Extract data safely with fallbacks
@@ -65,7 +66,7 @@ export default function CountryCard({ country }) {
  * InfoItem
  * Small helper component for a label+value pair.
  */
-function InfoItem({ icon, label, value }) {
+function InfoItem({ icon, label, value }: { icon: string; label: string; value: string }) {
   return (
     <div className="bg-gray-50 rounded-lg p-2.5">
       <div className="text-xs text-gray-400 mb-0.5">

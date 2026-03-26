@@ -12,8 +12,14 @@
  */
 
 import { useEffect, useRef } from "react";
+import { ChatMessage } from "@/utils/types";
 
-export default function ChatBox({ messages, isAiThinking }) {
+interface ChatBoxProps {
+  messages: ChatMessage[];
+  isAiThinking: boolean;
+}
+
+export default function ChatBox({ messages, isAiThinking }: ChatBoxProps) {
   // This ref lets us auto-scroll to the latest message
   const bottomRef = useRef(null);
 
@@ -57,7 +63,7 @@ export default function ChatBox({ messages, isAiThinking }) {
  * Renders a single chat message.
  * User messages appear on the RIGHT, AI messages on the LEFT.
  */
-function MessageBubble({ message }) {
+function MessageBubble({ message }: { message: ChatMessage }) {
   const isUser = message.role === "user";
 
   return (
@@ -95,7 +101,8 @@ function MessageBubble({ message }) {
  * Converts **bold** markdown to <strong> tags.
  * Simple inline parser — no need for a full markdown library.
  */
-function formatMessage(text) {
+function formatMessage(text?: string) {
+  if (!text) return null;
   const parts = text.split(/\*\*(.*?)\*\*/g);
   return parts.map((part, i) =>
     i % 2 === 1 ? (

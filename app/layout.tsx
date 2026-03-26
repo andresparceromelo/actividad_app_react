@@ -22,7 +22,7 @@ export const metadata = {
     "A fun geography guessing game powered by AI. Ask questions, get hints, and guess the mystery country!",
 };
 
-export default function RootLayout({ children }) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body className="bg-gray-50 text-gray-900 flex flex-col min-h-screen">

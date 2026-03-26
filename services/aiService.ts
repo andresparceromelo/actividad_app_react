@@ -1,5 +1,7 @@
+import { Country, ChatMessage } from "../utils/types";
+
 /**
- * aiService.js
+ * aiService.ts
  * ─────────────────────────────────────────────────────────────
  * This service handles all communication with the novita.ai API.
  * It builds the prompt, sends the request, and returns the answer.
@@ -20,11 +22,15 @@ const MODEL = "meta-llama/llama-3.1-8b-instruct";
  * Sends the user's question to the AI along with the secret country data.
  *
  * @param {string} userQuestion  - The question the player typed
- * @param {object} country       - The secret country object (hidden from UI)
- * @param {Array}  chatHistory   - Previous messages for context
+ * @param {Country | null} country       - The secret country object (hidden from UI)
+ * @param {ChatMessage[]}  chatHistory   - Previous messages for context
  * @returns {Promise<string>}    - The AI's answer text
  */
-export async function askAI(userQuestion, country, chatHistory = []) {
+export async function askAI(
+  userQuestion: string,
+  country: Country | null,
+  chatHistory: ChatMessage[] = []
+): Promise<string> {
   // ── 1. Build the system prompt ──────────────────────────────
   // This tells the AI WHO it is and what country it's thinking of.
   // We include all country data here so the AI can answer questions.
@@ -35,7 +41,10 @@ export async function askAI(userQuestion, country, chatHistory = []) {
   const messages = [
     { role: "system", content: systemPrompt },
     // Include previous turns (max 10 to save tokens)
-    ...chatHistory.slice(-10),
+    ...chatHistory.slice(-10).map((m) => ({
+      role: m.role === "user" ? "user" : "assistant",
+      content: m.content || m.text || "",
+    })),
     { role: "user", content: userQuestion },
   ];
 
@@ -72,10 +81,10 @@ export async function askAI(userQuestion, country, chatHistory = []) {
  * Creates the instructions the AI follows during the game.
  * This is the "brain" of the game — it shapes how the AI behaves.
  *
- * @param {object} country - The secret country data
+ * @param {Country | null} country - The secret country data
  * @returns {string}       - The full system prompt
  */
-function buildSystemPrompt(country) {
+function buildSystemPrompt(country: Country | null): string {
   // Extract country details safely (some fields may be missing)
   const name = country?.name?.common ?? "Unknown";
   const capital = country?.capital?.[0] ?? "Unknown";
@@ -86,7 +95,7 @@ function buildSystemPrompt(country) {
   const currencyCode = country?.currencies
     ? Object.keys(country.currencies)[0]
     : null;
-  const currencyName = currencyCode
+  const currencyName = currencyCode && country?.currencies
     ? country.currencies[currencyCode].name
     : "Unknown";
 

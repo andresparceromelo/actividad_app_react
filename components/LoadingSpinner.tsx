@@ -8,7 +8,12 @@
  * ─────────────────────────────────────────────────────────────
  */
 
-export default function LoadingSpinner({ size = "md", message }) {
+interface LoadingSpinnerProps {
+  size?: "sm" | "md" | "lg";
+  message?: string;
+}
+
+export default function LoadingSpinner({ size = "md", message }: LoadingSpinnerProps) {
   // Map size prop to Tailwind classes
   const sizeClasses = {
     sm: "w-5 h-5 border-2",
