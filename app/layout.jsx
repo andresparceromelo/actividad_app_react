@@ -12,8 +12,8 @@
  */
 
 import "./globals.css";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 // Next.js metadata — sets the <title> and <meta description> tags
 export const metadata = {
